@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3030;
 const path = require('path');
 // these are some of the libraries you will need
 
-// Array to store names and emails
+// Array to store names
 let users = [];
 
 app.use(bodyParser.json());
@@ -21,10 +21,9 @@ app.get('/', function(req, res) {
 // Handle the form submission via fetch
 app.post('/input', function(req, res){
     const name = escape(req.body.name);
-    const email = escape(req.body.email);
 
     // Add the new user to the array
-    users.push({ name: name, email: email });
+    users.push({ name: name});
 
     // Send the updated list of users back as JSON
     res.json(users);
@@ -34,4 +33,3 @@ app.post('/input', function(req, res){
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}/`);
 });
-// This code is similar to the previous exam
