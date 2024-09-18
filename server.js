@@ -22,9 +22,22 @@ app.get('/', function(req, res) {
 app.post('/input', function(req, res){
     const name = escape(req.body.name);
     const reactionTime = escape(req.body.reactionTime);
+    let order = users.length
 
-    // Add the new user to the array
-    users.push({ name: name, reactionTime: reactionTime });
+    if (users.length === 0) {
+        users.push({ name: name, reactionTime: reactionTime });
+    }
+    else{
+        for (let i = 0; i < users.length; i++) {
+            if (parseFloat(reactionTime) < parseFloat(users[i].reactionTime)) {
+                order = i;
+                break;
+            }
+        }
+        // Add the new user to the array
+        users.splice(order, 0, { name: name, reactionTime: reactionTime });
+    }
+
 
     // Send the updated list of users back as JSON
     res.json(users);
