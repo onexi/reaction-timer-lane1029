@@ -21,9 +21,10 @@ app.get('/', function(req, res) {
 // Handle the form submission via fetch
 app.post('/input', function(req, res){
     const name = escape(req.body.name);
+    const reactionTime = escape(req.body.reactionTime);
 
     // Add the new user to the array
-    users.push({ name: name});
+    users.push({ name: name, reactionTime: reactionTime });
 
     // Send the updated list of users back as JSON
     res.json(users);

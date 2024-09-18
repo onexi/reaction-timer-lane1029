@@ -12,9 +12,9 @@
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required />
         <br /><br />
-        <h2>When you are ready to compete for the fastest reaction time, click begin!</h2>
+        <h2>When you are ready to compete for the fastest reaction time, click START!</h2>
         <br /><br />
-        <button type="submit">Start</button>
+        <button type="submit">START</button>
       </form>
       <br /><br />
       <button id="colorButton" style="background-color: green;">Click Me!</button>
@@ -26,6 +26,9 @@
 
     <script>
       let name = "";
+      let startTime;
+      let reactionTime
+      let disqualified = false;
 
       document
         .getElementById("dataForm")
@@ -35,33 +38,56 @@
           // Get form data
           name = document.getElementById("name").value;
 
-          if (name){
+          if (document.getElementById("colorButton").style.backgroundColor === "red") {
+            document.getElementById("colorButton").style.backgroundColor = "green";
+          }
+          if (name) {
+        const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 6 seconds
+        disqualified = false;
+        setTimeout(() => {
+          document.getElementById("colorButton").style.backgroundColor = "red";
+          startTime = new Date().getTime(); // Get the start time when the button changes color
+        }, delay);
 
-            const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 20 seconds
-            setTimeout(() => {
-            document.getElementById("colorButton").style.backgroundColor = "red";
-              }, delay);
           } else {
-            alert("Please enter your name and submit the form first.");
+        alert("Please enter your name first.");
           }
         });
       document
         .getElementById("colorButton")
         .addEventListener("click", function () {
-          this.style.backgroundColor = "green";
+        if (this.style.backgroundColor === "green") {
+          alert("Wait for the button to turn red before clicking! This run is disqualified. Please click START to try again.");
+          disqualified = true;
+        }
+          else{
+            this.style.backgroundColor = "green";
+            if (disqualified) {
+              return;
+            }
+          const currentTime = new Date().getTime();
+          reactionTime = (currentTime - startTime)/1000;
+          }
         });
       document
         .getElementById("colorButton")
         .addEventListener("click", function () {
         
-
+        
+        if (this.style.backgroundColor === "red" && disqualified) {
+          this.style.backgroundColor = "green";
+          return;
+        }
+        if (disqualified) {
+          return;
+        }
         // Send data to Web Server in the body of fetch request
         fetch("/input", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: name }),
+          body: JSON.stringify({ name: name, reactionTime: reactionTime }),
         })
           .then((response) => response.json())
           .then((data) => {
@@ -72,7 +98,7 @@
             // Populate the list with updated users
             data.forEach((user) => {
           const li = document.createElement("li");
-          li.textContent = `${user.name}`;
+          li.textContent = `${user.name} ${user.reactionTime}`;
           userList.appendChild(li);
             });
 
