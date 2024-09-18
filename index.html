@@ -25,17 +25,6 @@
     </section>
 
     <script>
-      document
-        .getElementById("dataForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault(); // Prevent the default form submission
-
-          const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 20 seconds
-          setTimeout(() => {
-            document.getElementById("colorButton").style.backgroundColor = "red";
-          }, delay);
-        }
-      );
       let name = "";
 
       document
@@ -56,11 +45,16 @@
             alert("Please enter your name and submit the form first.");
           }
         });
-
       document
         .getElementById("colorButton")
         .addEventListener("click", function () {
-          if (name) {
+          this.style.backgroundColor = "green";
+        });
+      document
+        .getElementById("colorButton")
+        .addEventListener("click", function () {
+        
+
         // Send data to Web Server in the body of fetch request
         fetch("/input", {
           method: "POST",
@@ -87,9 +81,6 @@
             name = ""; // Reset the name variable
           })
           .catch((error) => console.error("Error:", error));
-          } else {
-        alert("Please enter your name and submit the form first.");
-          }
         });
         </script>
   </body>
