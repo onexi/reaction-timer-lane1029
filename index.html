@@ -6,20 +6,23 @@
     <title>Submit Your Details</title>
   </head>
   <body>
-    <h1>Enter Your Name</h1>
-    <form id="dataForm">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required />
+    <section id="section1">
+      <h2>Enter Your Name</h2>
+      <form id="dataForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+        <br /><br />
+        <h2>When you are ready to compete for the fastest reaction time, click begin!</h2>
+        <br /><br />
+        <button type="submit">Start</button>
+      </form>
       <br /><br />
-      <h2>When you are ready to compete for the fastest reaction time, press begin!</h2>
-      <br /><br />
-      <button type="submit">Start</button>
-    </form>
-    <br /><br />
-    <button id="colorButton" style="background-color: green;">Click Me!</button>
-    <br /><br />
-    <h2>Submitted Users:</h2>
-    <ul id="userList"></ul>
+      <button id="colorButton" style="background-color: green;">Click Me!</button>
+    </section>
+    <section id="section2">
+      <h2>Submitted Users:</h2>
+      <ul id="userList"></ul>
+    </section>
 
     <script>
       document
@@ -27,46 +30,67 @@
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevent the default form submission
 
-          const delay = Math.floor(Math.random() * 10000) + 1000; // Random delay between 1 and 20 seconds
+          const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 20 seconds
           setTimeout(() => {
             document.getElementById("colorButton").style.backgroundColor = "red";
           }, delay);
         }
       );
+      let name = "";
+
       document
         .getElementById("dataForm")
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevent the default form submission
 
           // Get form data
-          const name = document.getElementById("name").value;
+          name = document.getElementById("name").value;
 
-          // Send data to Web Server in the body of fetch request
-          fetch("/input", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name: name}),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              // Clear the current list
-              const userList = document.getElementById("userList");
-              userList.innerHTML = "";
+          if (name){
 
-              // Populate the list with updated users
-              data.forEach((user) => {
-                const li = document.createElement("li");
-                li.textContent = `${user.name}`;
-                userList.appendChild(li);
-              });
-
-              // Clear the form inputs
-              document.getElementById("name").value = "";
-            })
-            .catch((error) => console.error("Error:", error));
+            const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 20 seconds
+            setTimeout(() => {
+            document.getElementById("colorButton").style.backgroundColor = "red";
+              }, delay);
+          } else {
+            alert("Please enter your name and submit the form first.");
+          }
         });
-    </script>
+
+      document
+        .getElementById("colorButton")
+        .addEventListener("click", function () {
+          if (name) {
+        // Send data to Web Server in the body of fetch request
+        fetch("/input", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: name }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Clear the current list
+            const userList = document.getElementById("userList");
+            userList.innerHTML = "";
+
+            // Populate the list with updated users
+            data.forEach((user) => {
+          const li = document.createElement("li");
+          li.textContent = `${user.name}`;
+          userList.appendChild(li);
+            });
+
+            // Clear the form inputs
+            document.getElementById("name").value = "";
+            name = ""; // Reset the name variable
+          })
+          .catch((error) => console.error("Error:", error));
+          } else {
+        alert("Please enter your name and submit the form first.");
+          }
+        });
+        </script>
   </body>
 </html>
