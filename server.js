@@ -24,9 +24,11 @@ app.post('/input', function(req, res){
     const reactionTime = escape(req.body.reactionTime);
     let order = users.length
 
+    // If the array is empty, add the user to the array
     if (users.length === 0) {
         users.push({ name: name, reactionTime: reactionTime });
     }
+    // If the array is not empty, find the correct place to insert the new user based on reaction time
     else{
         for (let i = 0; i < users.length; i++) {
             if (parseFloat(reactionTime) < parseFloat(users[i].reactionTime)) {
@@ -34,10 +36,9 @@ app.post('/input', function(req, res){
                 break;
             }
         }
-        // Add the new user to the array
+        // Add the new user to the array at the correct position
         users.splice(order, 0, { name: name, reactionTime: reactionTime });
     }
-
 
     // Send the updated list of users back as JSON
     res.json(users);
