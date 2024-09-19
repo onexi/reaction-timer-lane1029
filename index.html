@@ -45,68 +45,96 @@
       let startClicked = false;
       let falseStart = true;
 
+      // Once a user presses enter key or clicks the start button, start the game
       document
         .getElementById("dataForm")
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevent the default form submission
 
+          // Adjust the setting of these variables since the user pressed the start button
           startClicked = true;
           falseStart = false;
 
-          // Get form data
+          // Get name from form
           name = document.getElementById("name").value;
 
+          // Check that the color of the button is the correct starting color
           if (document.getElementById("colorButton").style.backgroundColor === "red") {
             document.getElementById("colorButton").style.backgroundColor = "green";
           }
+
+          // Change the color of the button to red after a random delay if the user has entered their name
+          // Otherwise, prompt the user to enter a name
           if (name) {
-        const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 6 seconds
-        disqualified = false;
-        setTimeout(() => {
-          document.getElementById("colorButton").style.backgroundColor = "red";
-          startTime = new Date().getTime(); // Get the start time when the button changes color
-        }, delay);
+            const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 6 seconds
+            // Reset the disqualified variable in case it was set to true in a previous attempt
+            disqualified = false;
+
+            // Change the color and get the starting time once the button has changed color
+            setTimeout(() => {
+              document.getElementById("colorButton").style.backgroundColor = "red";
+              startTime = new Date().getTime(); // Get the start time when the button changes color
+            }, delay);
 
           } else {
-        alert("Please enter your name first.");
+            alert("Please enter your name first.");
           }
         });
+
+      // When a user clicks the colorButton, execute the following code
       document
         .getElementById("colorButton")
         .addEventListener("click", function () {
+        // If the user clicks the colorButton before starting the game, prompt them to start the game
         if (!startClicked) {
           alert("Please click START first.");
           falseStart = true;
           return;
         }
 
+        // If the user clicks the colorButton before the color changes to red, disqualify them
         if (this.style.backgroundColor === "green") {
           alert("Wait for the button to turn red before clicking! This run is disqualified. Please click START to try again.");
           disqualified = true;
         }
-          else{
-            this.style.backgroundColor = "green";
-            if (disqualified) {
-              return;
-            }
+        // otherwise...
+        else{
+          // Change the color back to green
+          this.style.backgroundColor = "green";
+          // If the use clicks on the button after it changes to red but they are already disqualified, reset for another attempt
+          // and do not calculate the reaction time
+          if (disqualified) {
+            return;
+          }
+
+          // Calculate the reaction time
           const currentTime = new Date().getTime();
           reactionTime = (currentTime - startTime)/1000;
           }
         });
+
+      // When the colorButton is clicked, send the data to the server
       document
         .getElementById("colorButton")
         .addEventListener("click", function () {
         
+        // Check that the false start tag wasn't flagged
         if (falseStart) {
           return;
         }
+
+        // Check to see if the color of the button is still red. This is likely due to a disqualified run
+        // Reset the color to green and return
         if (this.style.backgroundColor === "red" && disqualified) {
           this.style.backgroundColor = "green";
           return;
         }
+
+        // Do not send results to the server if the user was disqualified
         if (disqualified) {
           return;
         }
+        
         // Send data to Web Server in the body of fetch request
         fetch("/input", {
           method: "POST",
