@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rapid Reflex</title>
+    <style>
+      .container {
+          display: grid;
+          place-items: center;
+          height: 10vh; /* Full viewport height */
+      }
+  </style>
   </head>
   <body>
     <section id="section1">
@@ -15,12 +22,15 @@
         <h2>How fast can your react?</h2>
         Your goal is to see how fast you can click the button after it changes to red. Your name and results will be recorded and displayed on the leaderboard.
         If you try to cheat by clicking the button before it turns red, you will be disqualified and your time will not be recorded.
-        When you are ready to compete for the fastest reaction time, click START and press Enter!
+        When you are ready to compete for the fastest reaction time, click START or press Enter!
         <br /><br />
         <button type="submit">START</button>
       </form>
       <br /><br />
-      <button id="colorButton" style="background-color: green;">Click Me!</button>
+      <div class="container">
+        <button id="colorButton" style="background-color: green; color: white; border-radius: 50%; width: 100px; height: 100px;">Click Me!</button>
+      </div>
+      
     </section>
     <section id="section2">
       <h2>Leaderboard:</h2>
@@ -30,13 +40,18 @@
     <script>
       let name = "";
       let startTime;
-      let reactionTime
+      let reactionTime;
       let disqualified = false;
+      let startClicked = false;
+      let falseStart = true;
 
       document
         .getElementById("dataForm")
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevent the default form submission
+
+          startClicked = true;
+          falseStart = false;
 
           // Get form data
           name = document.getElementById("name").value;
@@ -59,6 +74,12 @@
       document
         .getElementById("colorButton")
         .addEventListener("click", function () {
+        if (!startClicked) {
+          alert("Please click START first.");
+          falseStart = true;
+          return;
+        }
+
         if (this.style.backgroundColor === "green") {
           alert("Wait for the button to turn red before clicking! This run is disqualified. Please click START to try again.");
           disqualified = true;
@@ -76,7 +97,9 @@
         .getElementById("colorButton")
         .addEventListener("click", function () {
         
-        
+        if (falseStart) {
+          return;
+        }
         if (this.style.backgroundColor === "red" && disqualified) {
           this.style.backgroundColor = "green";
           return;
