@@ -45,6 +45,14 @@
       let startClicked = false;
       let falseStart = true;
 
+      // Function to check if the user was disqualified and change the color if they are not
+      function checkDisqualified() {
+        if (!disqualified) {
+          document.getElementById("colorButton").style.backgroundColor = "red";
+          startTime = new Date().getTime(); // Get the start time when the button changes color
+        }
+      }
+
       // Once a user presses enter key or clicks the start button, start the game
       document
         .getElementById("dataForm")
@@ -66,14 +74,13 @@
           // Change the color of the button to red after a random delay if the user has entered their name
           // Otherwise, prompt the user to enter a name
           if (name) {
-            const delay = Math.floor(Math.random() * 5000) + 1000; // Random delay between 1 and 6 seconds
+            const delay = Math.floor(Math.random() * 19000) + 1000; // Random delay between 1 and 20 seconds
             // Reset the disqualified variable in case it was set to true in a previous attempt
             disqualified = false;
 
             // Change the color and get the starting time once the button has changed color
             setTimeout(() => {
-              document.getElementById("colorButton").style.backgroundColor = "red";
-              startTime = new Date().getTime(); // Get the start time when the button changes color
+              checkDisqualified();
             }, delay);
 
           } else {
@@ -120,13 +127,6 @@
         
         // Check that the false start tag wasn't flagged
         if (falseStart) {
-          return;
-        }
-
-        // Check to see if the color of the button is still red. This is likely due to a disqualified run
-        // Reset the color to green and return
-        if (this.style.backgroundColor === "red" && disqualified) {
-          this.style.backgroundColor = "green";
           return;
         }
 
