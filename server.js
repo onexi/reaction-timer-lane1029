@@ -7,7 +7,7 @@ const path = require('path');
 // these are some of the libraries you will need
 
 // Array to store names
-let users = [];
+let players = [];
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -22,26 +22,26 @@ app.get('/', function(req, res) {
 app.post('/input', function(req, res){
     const name = escape(req.body.name);
     const reactionTime = escape(req.body.reactionTime);
-    let order = users.length
+    let order = players.length
 
     // If the array is empty, add the user to the array
-    if (users.length === 0) {
-        users.push({ name: name, reactionTime: reactionTime });
+    if (players.length === 0) {
+        players.push({ name: name, reactionTime: reactionTime });
     }
-    // If the array is not empty, find the correct place to insert the new user based on reaction time
+    // If the array is not empty, find the correct place to insert the new player based on reaction time
     else{
-        for (let i = 0; i < users.length; i++) {
-            if (parseFloat(reactionTime) < parseFloat(users[i].reactionTime)) {
+        for (let i = 0; i < players.length; i++) {
+            if (parseFloat(reactionTime) < parseFloat(players[i].reactionTime)) {
                 order = i;
                 break;
             }
         }
         // Add the new user to the array at the correct position
-        users.splice(order, 0, { name: name, reactionTime: reactionTime });
+        players.splice(order, 0, { name: name, reactionTime: reactionTime });
     }
 
-    // Send the updated list of users back as JSON
-    res.json(users);
+    // Send the updated list of players back as JSON
+    res.json(players);
 });
 
 // Start the server
