@@ -20,7 +20,7 @@ app.get('/', function(req, res) {
 
 // Handle the form submission via fetch
 app.post('/input', function(req, res){
-    const name = escape(req.body.name);
+    const name = decodeURIComponent(escape(req.body.name));
     const reactionTime = escape(req.body.reactionTime);
     let order = players.length
 
